@@ -4,6 +4,8 @@ import '../data/product.dart';
 import '../data/product_database.dart';
 import 'barcode_scanner_page.dart';
 import 'product_form_page.dart';
+import 'purchase_history_page.dart';
+import 'purchase_page.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -57,6 +59,25 @@ class _ProductsPageState extends State<ProductsPage> {
     final existing = await ProductDatabase.instance.findByBarcode(barcode);
     if (!mounted) return;
     await _openForm(product: existing, barcode: barcode);
+  }
+
+  Future<void> _openPurchase() async {
+    final saved = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => const PurchasePage()),
+    );
+    if (saved != true || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Compra salva com sucesso.'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _openPurchaseHistory() async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(builder: (_) => const PurchaseHistoryPage()),
+    );
   }
 
   Future<void> _openForm({Product? product, String barcode = ''}) async {
@@ -135,9 +156,14 @@ class _ProductsPageState extends State<ProductsPage> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Ler código de barras',
-            onPressed: _scanBarcode,
-            icon: const Icon(Icons.document_scanner_outlined),
+            tooltip: 'Histórico de compras',
+            onPressed: _openPurchaseHistory,
+            icon: const Icon(Icons.receipt_long_outlined),
+          ),
+          IconButton(
+            tooltip: 'Modo compra',
+            onPressed: _openPurchase,
+            icon: const Icon(Icons.shopping_cart_outlined),
           ),
           const SizedBox(width: 8),
         ],
@@ -146,10 +172,6 @@ class _ProductsPageState extends State<ProductsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-              child: _heroCard(),
-            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
               child: TextField(
@@ -197,68 +219,6 @@ class _ProductsPageState extends State<ProductsPage> {
         onPressed: _scanBarcode,
         icon: const Icon(Icons.qr_code_scanner_rounded),
         label: const Text('Ler produto'),
-      ),
-    );
-  }
-
-  Widget _heroCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF183C31),
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1B4739), Color(0xFF17372D)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Seu catálogo,\nsempre à mão.',
-                    style: TextStyle(
-                        color: Colors.white,
-                        height: 1.12,
-                        fontSize: 23,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5)),
-                const SizedBox(height: 8),
-                Text(
-                  _products.isEmpty
-                      ? 'Leia um código e cadastre seu primeiro produto.'
-                      : 'Produtos organizados em um só lugar.',
-                  style: const TextStyle(color: Color(0xFFC8D9CE), fontSize: 13),
-                ),
-                const SizedBox(height: 18),
-                FilledButton.icon(
-                  onPressed: _scanBarcode,
-                  icon: const Icon(Icons.center_focus_strong_rounded, size: 18),
-                  label: const Text('Escanear agora'),
-                  style: FilledButton.styleFrom(
-                    foregroundColor: const Color(0xFF15372C),
-                    backgroundColor: const Color(0xFFB9EF78),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            width: 68,
-            height: 68,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.09),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: const Icon(Icons.qr_code_2_rounded,
-                size: 42, color: Color(0xFFB9EF78)),
-          ),
-        ],
       ),
     );
   }

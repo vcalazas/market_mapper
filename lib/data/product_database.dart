@@ -13,7 +13,10 @@ class ProductDatabase {
     final path = await getDatabasesPath();
     _database = await openDatabase(
       '$path/prateleira.db',
-      version: 1,
+      version: 2,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE products (
@@ -23,9 +26,36 @@ class ProductDatabase {
             price REAL NOT NULL
           )
         ''');
+        await _createPurchaseTables(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) await _createPurchaseTables(db);
       },
     );
     return _database!;
+  }
+
+  static Future<void> _createPurchaseTables(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE purchases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        created_at TEXT NOT NULL,
+        total REAL NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE purchase_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        purchase_id INTEGER NOT NULL,
+        product_id INTEGER,
+        barcode TEXT NOT NULL,
+        name TEXT NOT NULL,
+        unit_price REAL NOT NULL,
+        quantity INTEGER NOT NULL,
+        subtotal REAL NOT NULL,
+        FOREIGN KEY (purchase_id) REFERENCES purchases(id)
+      )
+    ''');
   }
 
   Future<List<Product>> getAll({String query = ''}) async {
