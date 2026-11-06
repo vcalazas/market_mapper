@@ -81,12 +81,16 @@ class _PurchasePageState extends State<PurchasePage> {
     final entry = _entries[index];
     final quantity = entry.quantity + delta;
     if (quantity < 1) {
-      _entries.removeAt(index);
+      setState(() {
+        _entries.removeAt(index);
+      });
+    } else {
+      setState(() => _entries[index] = PurchaseEntry(
+        product: entry.product,
+        quantity: quantity,
+      ));
     }
-    setState(() => _entries[index] = PurchaseEntry(
-          product: entry.product,
-          quantity: quantity,
-        ));
+
   }
 
   Future<void> _closePurchase() async {
@@ -264,7 +268,7 @@ class _PurchasePageState extends State<PurchasePage> {
           ),
           IconButton(
             tooltip: 'Diminuir quantidade',
-            onPressed: entry.quantity > 1 ? () => _changeQuantity(index, -1) : null,
+            onPressed: entry.quantity > 0 ? () => _changeQuantity(index, -1) : null,
             visualDensity: VisualDensity.compact,
             icon: const Icon(Icons.remove_circle_outline_rounded),
           ),
