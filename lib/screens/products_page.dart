@@ -6,6 +6,7 @@ import 'barcode_scanner_page.dart';
 import 'product_form_page.dart';
 import 'purchase_history_page.dart';
 import 'purchase_page.dart';
+import 'open_food_facts_lookup_page.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -144,6 +145,44 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(20, 24, 20, 18),
+                child: Row(
+                  children: [
+                    Icon(Icons.widgets_rounded,
+                        color: Color(0xFF1D7358), size: 28),
+                    SizedBox(width: 10),
+                    Text(
+                      'Prateleira',
+                      style: TextStyle(
+                        color: Color(0xFF20362E),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(Icons.travel_explore_rounded),
+                title: const Text('Consulta Open Food Facts'),
+                subtitle: const Text('Tela experimental'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context)
+                      .pushNamed(OpenFoodFactsLookupPage.routeName);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         titleSpacing: 20,
         title: const Row(
