@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/products_page.dart';
 import 'screens/open_food_facts_lookup_page.dart';
+import 'screens/clique_economia_lookup_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +51,8 @@ class MarketMapperApp extends StatelessWidget {
       routes: {
         OpenFoodFactsLookupPage.routeName: (_) =>
             const OpenFoodFactsLookupPage(),
+        CliqueEconomiaLookupPage.routeName: (_) =>
+            const CliqueEconomiaLookupPage(),
       },
     );
   }

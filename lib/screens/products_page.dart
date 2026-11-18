@@ -7,6 +7,7 @@ import 'product_form_page.dart';
 import 'purchase_history_page.dart';
 import 'purchase_page.dart';
 import 'open_food_facts_lookup_page.dart';
+import 'clique_economia_lookup_page.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -177,6 +178,16 @@ class _ProductsPageState extends State<ProductsPage> {
                   Navigator.of(context).pop();
                   Navigator.of(context)
                       .pushNamed(OpenFoodFactsLookupPage.routeName);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.storefront_outlined),
+                title: const Text('Preços em Curitiba'),
+                subtitle: const Text('Clique Economia · experimental'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context)
+                      .pushNamed(CliqueEconomiaLookupPage.routeName);
                 },
               ),
             ],
